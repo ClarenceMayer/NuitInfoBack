@@ -19,15 +19,35 @@ class Sauveteur{
     async findByName(input)
     {
         var names = input.split(' ')
-        console.log(names)
         return sequelize.query("SELECT * From Sauveteur WHERE Nom LIKE ? OR Prenom LIKE ?",
         {
             replacements: names
         })
     }
 
-    async getNbSaved(){
+    async getNbSaved(id){
+        return sequelize.query("SELECT COUNT * FROM Sauver WHERE id = :id",
+        {
+            replacements: { id: id }
+        })
+    }
 
+    async createSauveteur(nom,prenom,description,naissance,mort,id_utilisateur){
+        sequelize.query("INSERT INTO Sauveteur (Nom,Prenom,Description,Naissance,Mort,Valide,DateCreation,ID_Utilisateur) VALUES (:nom , :prenom , :description , :naissance , :mort , 0 , "+ Date.now()+ " , :id_utilisateur",
+        {
+            replacements: {nom : nom, prenom : prenom ,description : description ,naissance : naissance ,mort : mort, id_utilisateur : id_utilisateur}
+        })
+    }
+
+    async updateSauveteur(id,){
+
+    }
+
+    async deleteSauveteur(id){
+        sequelize.query("DELETE * FROM Sauveteur WHERE id = :id",
+        {
+            replacements: { id: id }
+        })
     }
 }
 
@@ -49,6 +69,20 @@ class Sauve{
         return sequelize.query("SELECT * From Sauve WHERE Nom LIKE ? OR Prenom LIKE ?",
         {
             replacements: names
+        })
+    }
+
+    async createSauve(nom,prenom,id_utilisateur){
+        sequelize.query("INSERT INTO Sauve (Nom,Prenom,Valide,DateCreation,ID_Utilisateur) VALUES (:nom , :prenom , 0 , "+ Date.now()+ " , :id_utilisateur",
+        {
+            replacements: {nom : nom, prenom : prenom , id_utilisateur : id_utilisateur}
+        })
+    }
+
+    async deleteSauve(id){
+        sequelize.query("DELETE * FROM Sauve WHERE id = :id",
+        {
+            replacements: { id: id }
         })
     }
 }
@@ -73,6 +107,38 @@ class Evenement{
             replacements: words
         })
     }
+
+    async createEvenement(titre,description,dateEvenement,nbSauve, nbSauveur,id_Utilisateur){
+        sequelize.query("INSERT INTO Evenement (Titre,Description,DateEvenement,NbSauve, NbSauveur, valide,dateCreation,ID_Utilisateur) VALUES (:titre , :description, :dateEvenement , :nbSauve , :nbSauveur,  0 , "+ Date.now()+ " , :id_utilisateur",
+        {
+            replacements: {titre : titre, description : description ,nbSauve : nbSauve, nbSauveur: nbSauveur, id_utilisateur : id_utilisateur}
+        })
+    }
+
+    async deleteEvenement(id){
+        sequelize.query("DELETE * FROM Evenement WHERE id = :id",
+        {
+            replacements: { id: id }
+        })
+    }
 }
 
-module.exports = {Sauveteur, Sauve, Evenement}
+class Utilisateur{
+
+    async findAll(){
+        return sequelize.query("SELECT * From Utilisateur")
+    }
+
+    async findById(id){
+        return sequelize.query("SELECT * From Utilisateur WHERE id = :id ",
+        {
+            replacements: { id: id }
+        })
+    }
+
+    async login(login, mdp){
+
+    }
+}
+
+module.exports = {Sauveteur, Sauve, Evenement, Utilisateur}
